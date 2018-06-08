@@ -1,9 +1,17 @@
-package = "Lua-Telegram-API"
-version = "0.3"
+-- This file was automatically generated for the LuaDist project.
+
+package = "lua-telegram-api"
+version = "0.3-2"
+-- LuaDist source
 source = {
-   url = "git://github.com/jonnyguio/telegram-bot-api",
-   tag = "v0.3"
+  tag = "0.3-2",
+  url = "git://github.com/LuaDist-testing/lua-telegram-api.git"
 }
+-- Original source
+-- source = {
+--    url = "git://github.com/jonnyguio/telegram-bot-api",
+--    tag = "v0.3.2"
+-- }
 description = {
    summary = "An API to the Telegram Bots, written in Lua.",
    detailed = [[
