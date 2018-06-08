@@ -11,6 +11,7 @@
 local https = require 'ssl.https'
 local JSON = require 'json'
 local multipart = require 'multipart'
+local webhook_module = require './webhook-server'
 
 --[[
     functions to implement
@@ -122,11 +123,10 @@ url_query archetype
 function API.new(token, method)
     local inst = {}
     setmetatable(inst, API)
-
     local body, code, headers, status = https.request(API.url .. token .. '/getMe')
     local parsedBody = JSON.decode(body)
     assert(parsedBody.ok, 'Error: Wrong Token')
-    assert(method == nil or method == 'url_query' or method == 'application/json' or method == 'application/x-www-form' or method == 'multipart/form-data', 'Invalid method to format')
+    -- assert((method ~= 'url-query'), 'Invalid method to format')
 
     inst.firstname = parsedBody.result.first_name
     inst.username = parsedBody.result.username
@@ -199,6 +199,13 @@ function API:getFile(file_id)
 end
 
 function API:getUpdates(options)
+    --[[
+        Optional parameters:
+            offset,
+            limit,
+            timeout,
+            allowed_updates
+    ]]
     return request(self, 'getUpdates', options)
 end
 
@@ -225,9 +232,13 @@ function API:downloadFile(file_id, filename)
 end
 
 -- Set the bot to an specific webhook
--- function API:setWebhook()
---     if not self.updatesOn then
---     end
--- end
+-- Be aware that, to allow a webhook, you're opening a server so that telegram can send requests to you. You should be clearly aware of the risks.
+-- Check Marvel Marvellous Guide to All Things Webhook (https://core.telegram.org/bots/webhooks)
+function API:setWebhook()
+    assert(self.webhook_allowed, 'Error, bot not set to allow webhook.')
+    if not self.webhook then
+        self.webhook = webhook_module.new('localhost', '8081', './')
+    end
+end
 
 return API
